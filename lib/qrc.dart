@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qrc/widget/app_bar.dart';
 import 'package:qrc/widget/theme_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,114 +52,113 @@ class _QrcViewState extends State<QrcView> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(
-          "CG-TECH SCANNER",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [ThemeButton()],
+        title: AppBarTitle(showHomeButton: true),
       ),
-      body: Column(
-        children: [
-          Card(
-            child: SizedBox(
-              height: 350,
-              child: MobileScanner(
-                onDetect: (result) async {
-                  final barcode = result.barcodes.first;
-                  final res = barcode.rawValue;
-                  //debugPrint("Contenu url : $res");
-                  if (res != null) {
-                    Uri? uri;
-                    try {
-                      uri = Uri.parse(res);
-                    } catch (_) {
-                      uri = null;
-                    }
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Card(
+              child: SizedBox(
+                height: 350,
+                child: MobileScanner(
+                  onDetect: (result) async {
+                    final barcode = result.barcodes.first;
+                    final res = barcode.rawValue;
+                    //debugPrint("Contenu url : $res");
+                    if (res != null) {
+                      Uri? uri;
+                      try {
+                        uri = Uri.parse(res);
+                      } catch (_) {
+                        uri = null;
+                      }
 
-                    //print(result.barcodes.first.rawValue);
-                    if (uri != null &&
-                        (uri.hasScheme &&
-                            (uri.scheme == "http" || uri.scheme == "https"))) {
-                      link = res;
-                      setState(() {
-                        showButton = true;
-                        showData = false;
-                      });
-                    } else {
-                      setState(() {
-                        showData = true;
-                        resultat = res;
-                        showButton = false;
-                      });
+                      //print(result.barcodes.first.rawValue);
+                      if (uri != null &&
+                          (uri.hasScheme &&
+                              (uri.scheme == "http" ||
+                                  uri.scheme == "https"))) {
+                        link = res;
+                        setState(() {
+                          showButton = true;
+                          showData = false;
+                        });
+                      } else {
+                        setState(() {
+                          showData = true;
+                          resultat = res;
+                          showButton = false;
+                        });
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
             ),
-          ),
-          showButton
-              ? Card(
-                  child: SizedBox(
-                    height: 50,
+            showButton
+                ? Card(
+                    child: SizedBox(
+                      height: 50,
 
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Click"),
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            if (link != null) {
-                              _launchUrl(link!);
-                            }
-                          },
-                          label: Text(link ?? "No data"),
-                          icon: Icon(Icons.open_in_browser),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : SizedBox(),
-          showData
-              ? Card(
-                  child: SizedBox(
-                    height: 150,
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        if (resultat != null) ...[
-                          Text(resultat!, overflow: TextOverflow.clip),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Click"),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              if (link != null) {
+                                _launchUrl(link!);
+                              }
+                            },
+                            label: Text(link ?? "No data"),
+                            icon: Icon(Icons.open_in_browser),
+                          ),
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                )
-              : SizedBox(),
-          ElevatedButton.icon(
-            onPressed: () {
-              setState(() {
-                showButton = false;
-                link = null;
-                resultat = null;
-                showData = false;
-              });
-            },
-            label: Text("Refresh"),
-            icon: Icon(Icons.refresh),
-          ),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.pushNamed(context, "/");
-            },
-            label: Text("Home"),
-            icon: Icon(Icons.home),
-          ),
-        ],
+                  )
+                : SizedBox(),
+            showData
+                ? Card(
+                    child: SizedBox(
+                      height: 150,
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          if (resultat != null) ...[
+                            Text(resultat!, overflow: TextOverflow.clip),
+                          ],
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox(),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  showButton = false;
+                  link = null;
+                  resultat = null;
+                  showData = false;
+                });
+              },
+              label: Text("Refresh"),
+              icon: Icon(Icons.refresh),
+            ),
+            /*  ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, "/");
+              },
+              label: Text("Home"),
+              icon: Icon(Icons.home),
+            ), */
+          ],
+        ),
       ),
     );
   }

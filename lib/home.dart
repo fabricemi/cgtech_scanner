@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qrc/widget/app_bar.dart';
 import 'package:qrc/widget/theme_button.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,23 +15,31 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: [ThemeButton()],
+        title: AppBarTitle(showHomeButton: false),
       ),
 
       body: Container(
         width: double.infinity,
-        height: double.infinity,
         color: Colors.black,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset("assets/images/logo.png", fit: BoxFit.contain),
+            SizedBox(height: 20),
             FilledButton.icon(
               onPressed: () {
                 Navigator.pushNamed(context, "/scan");
               },
               label: Text("Scanner"),
               icon: Icon(Icons.qr_code),
+            ),
+            SizedBox(height: 10),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, "/manage-qrc");
+              },
+              label: Text("Generate"),
+              icon: Icon(Icons.create),
             ),
           ],
         ),

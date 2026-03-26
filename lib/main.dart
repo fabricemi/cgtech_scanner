@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qrc/generator.dart';
 import 'package:qrc/home.dart';
+import 'package:qrc/prepare.dart';
 import 'package:qrc/qrc.dart';
+import 'package:qrc/manage_qrcode.dart';
 import 'package:qrc/theme.dart';
 
 void main() {
@@ -45,7 +48,22 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: "/",
-      routes: {"/": (context) => HomePage(), "/scan": (context) => QrcView()},
+      routes: {
+        "/": (context) => HomePage(),
+        "/scan": (context) => QrcView(),
+        "/prepare-qrc": (context) => PrepareQrCodeData(),
+        "/manage-qrc": (context) => GenerateQrCodeView(),
+      },
     );
   }
+}
+
+TextStyle? adapteText(
+  BuildContext context, {
+  double? fontSize,
+  FontWeight? fontWeight,
+}) {
+  final baseStyle = Theme.of(context).textTheme.bodyMedium;
+
+  return baseStyle?.copyWith(color: Theme.of(context).colorScheme.onSurface);
 }
